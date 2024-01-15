@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class MainGameScene < Scene
   def initialize(args)
     super('main_game', args)
@@ -17,7 +15,7 @@ class MainGameScene < Scene
     @sprites = [@left_paddle, @right_paddle, @ball]
   end
 
-  def tick(_args)
+  def tick(args)
     render
     calculations
     input_checking
