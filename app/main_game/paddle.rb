@@ -6,6 +6,9 @@ class Paddle < Sprite
 
   def initialize(args, starting_x, starting_y)
     super(args, '/sprites/paddle/paddle.png', starting_x, starting_y, @@width, @@height)
+
+    @allow_up = true
+    @allow_down = true
   end
 
   def self.width
@@ -18,11 +21,29 @@ class Paddle < Sprite
 
   # Action methods
   def move_up
+    return unless @allow_up
     @y += @@speed
   end
 
   def move_down
+    return unless @allow_down
     @y -= @@speed
+  end
+
+  def prevent_up
+    @allow_up = false
+  end
+
+  def allow_up
+    @allow_up = true
+  end
+
+  def prevent_down
+    @allow_down = false
+  end
+
+  def allow_down
+    @allow_down = true
   end
 
   # Calculation methods

@@ -45,6 +45,10 @@ class MainGameScene < Scene
     ball_collision_check_with_bottom
     ball_score_for_left_paddle
     ball_score_for_right_paddle
+
+    paddles_collision_with_top
+    paddles_collision_with_bottom
+
     @sprites.each { |sprite_group| sprite_group.each { |sprite| sprite.calculate(@args) } }
   end
 
@@ -77,6 +81,34 @@ class MainGameScene < Scene
     if @ball.right_x < @args.grid.left
       @right_score += 1
       reset_round
+    end
+  end
+
+  def paddles_collision_with_top
+    if @left_paddle.top_y >= @ui_bottom
+      @left_paddle.prevent_up
+    else
+      @left_paddle.allow_up
+    end
+
+    if @right_paddle.top_y >= @ui_bottom
+      @right_paddle.prevent_up
+    else
+      @right_paddle.allow_up
+    end
+  end
+
+  def paddles_collision_with_bottom
+    if @left_paddle.y <= @args.grid.bottom
+      @left_paddle.prevent_down
+    else
+      @left_paddle.allow_down
+    end
+
+    if @right_paddle.y <= @args.grid.bottom
+      @right_paddle.prevent_down
+    else
+      @right_paddle.allow_down
     end
   end
 
