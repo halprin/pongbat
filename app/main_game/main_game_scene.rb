@@ -5,8 +5,8 @@ class MainGameScene < Scene
     @left_score = 0
     @right_score = 0
 
-    @left_paddle = Paddle.new(args, args.grid.left + 10, args.grid.top - Paddle.height - 200)
-    @right_paddle = Paddle.new(args, args.grid.right - Paddle.width - 10, args.grid.top - Paddle.height - 200)
+    @left_paddle = Paddle.new(args, 'blue.png',args.grid.left + 10, args.grid.top - Paddle.height - 200)
+    @right_paddle = Paddle.new(args, 'red.png',args.grid.right - Paddle.width - 10, args.grid.top - Paddle.height - 200)
 
     @ui_bottom = args.grid.top - 80
 

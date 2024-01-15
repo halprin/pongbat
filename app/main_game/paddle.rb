@@ -4,8 +4,8 @@ class Paddle < Sprite
   @@width = 20
   @@height = 200
 
-  def initialize(args, starting_x, starting_y)
-    super(args, '/sprites/paddle/paddle.png', starting_x, starting_y, @@width, @@height)
+  def initialize(args, paddle_image, starting_x, starting_y)
+    super(args, '/sprites/paddle/' + paddle_image, starting_x, starting_y, @@width, @@height)
 
     @allow_up = true
     @allow_down = true

@@ -1,12 +1,10 @@
 class Ball < Sprite
 
-  @@width = 40
-  @@height = 40
+  @@width = 20
+  @@height = 20
 
   def initialize(args, starting_x, starting_y)
-    super(args, '/sprites/ball/red.png', starting_x, starting_y, @@width, @@height)
-
-
+    super(args, '/sprites/ball/unclaimed.png', starting_x, starting_y, @@width, @@height)
 
     @dx = (rand(5) + 1) * [1, -1].sample
     @dy = (rand(5) + 1) * [1, -1].sample
