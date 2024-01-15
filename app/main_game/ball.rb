@@ -6,10 +6,22 @@ class Ball < Sprite
   def initialize(args, starting_x, starting_y)
     super(args, '/sprites/ball/red.png', starting_x, starting_y, @@width, @@height)
 
-    @dx = 1
-    @dy = 1
+    @dx = 2
+    @dy = 2
 
   end
+
+  # Action methods
+
+  def bounce_sides
+    @dx *= -1
+  end
+
+  def bounce_top_bottom
+    @dy *= -1
+  end
+
+  # Calculation methods
 
   def calculate(args)
     move_ball

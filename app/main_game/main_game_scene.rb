@@ -8,6 +8,8 @@ class MainGameScene < Scene
     @left_paddle = Paddle.new(args, args.grid.left + 10, args.grid.top - Paddle.height - 200)
     @right_paddle = Paddle.new(args, args.grid.right - Paddle.width - 10, args.grid.top - Paddle.height - 200)
 
+    @ui_bottom = args.grid.top - 80
+
     @ball = Ball.new(args, args.grid.right / 2 , args.grid.top / 2)
 
     @sprites = [@left_paddle, @right_paddle, @ball]
@@ -26,7 +28,31 @@ class MainGameScene < Scene
   end
 
   def calculations
+    ball_collision_check_with_left_paddle
+    ball_collision_check_with_right_paddle
+    ball_collision_check_with_top
+    ball_collision_check_with_bottom
     @sprites.each { |sprite| sprite.calculate(@args) }
+  end
+
+  def ball_collision_check_with_left_paddle
+    if @left_paddle.collide_right(@ball)
+      @ball.bounce_sides
+    end
+  end
+
+  def ball_collision_check_with_right_paddle
+    if @right_paddle.collide_left(@ball)
+      @ball.bounce_sides
+    end
+  end
+
+  def ball_collision_check_with_top
+    @ball.bounce_top_bottom if @ball.top_y >= @ui_bottom
+  end
+
+  def ball_collision_check_with_bottom
+    @ball.bounce_top_bottom if @ball.y <= @args.grid.bottom
   end
 
   def input_checking
@@ -54,7 +80,7 @@ class MainGameScene < Scene
 
   def display_ui(args)
     # background
-    args.outputs.solids << [args.grid.left, args.grid.top - 80, args.grid.right, args.grid.top]
+    args.outputs.solids << [args.grid.left, @ui_bottom, args.grid.right, args.grid.top]
 
     # score
     args.outputs.labels << [args.grid.left, args.grid.top, 'Left Score', 0, 0, 255, 255, 255]

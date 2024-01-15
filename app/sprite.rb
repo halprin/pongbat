@@ -20,15 +20,32 @@ class Sprite
     angle = @args.geometry.angle_to(center(), other_sprite.center())
 
     if angle > 45 && angle < 135
-      # A skinny top so we can't stand past the left side
-      return 'TOP'
+      return :top
     elsif angle >= 135 && angle <= 225
-      return 'LEFT'
+      return :left
     elsif angle > 225 && angle <= 315
-      return 'BOTTOM'
+      return :bottom
     else
-      return 'RIGHT'
+      return :right
     end
+  end
+
+  def collide_left(other_sprite)
+    return other_sprite.intersect_rect?({
+                                          x: @x,
+                                          y: @y,
+                                          w: 1,
+                                          h: @h
+                                        })
+  end
+
+  def collide_right(other_sprite)
+    return other_sprite.intersect_rect?({
+                                          x: @x + @w - 1,
+                                          y: @y,
+                                          w: 1,
+                                          h: @h
+                                        })
   end
 
   def center
@@ -36,5 +53,9 @@ class Sprite
     center_y = @y + @h / 2
 
     return [center_x, center_y]
+  end
+
+  def top_y
+    return @y + @h
   end
 end
