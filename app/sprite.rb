@@ -48,6 +48,24 @@ class Sprite
                                         })
   end
 
+  def collide_top(other_sprite)
+    return other_sprite.intersect_rect?({
+                                          x: @x,
+                                          y: @y + @h -1,
+                                          w: @w,
+                                          h: 1
+                                        })
+  end
+
+  def collide_bottom(other_sprite)
+    return other_sprite.intersect_rect?({
+                                          x: @x,
+                                          y: @y,
+                                          w: @w,
+                                          h: 1
+                                        })
+  end
+
   def center
     center_x = @x + @w / 2
     center_y = @y + @h / 2

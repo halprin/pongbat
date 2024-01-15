@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MainGameScene < Scene
   def initialize(args)
     super('main_game', args)
@@ -10,12 +12,12 @@ class MainGameScene < Scene
 
     @ui_bottom = args.grid.top - 80
 
-    @ball = Ball.new(args, args.grid.right / 2 , args.grid.top / 2)
+    @ball = Ball.new(args, args.grid.right / 2, args.grid.top / 2)
 
     @sprites = [@left_paddle, @right_paddle, @ball]
   end
 
-  def tick(args)
+  def tick(_args)
     render
     calculations
     input_checking
@@ -36,15 +38,13 @@ class MainGameScene < Scene
   end
 
   def ball_collision_check_with_left_paddle
-    if @left_paddle.collide_right(@ball)
-      @ball.bounce_sides
-    end
+    @ball.bounce_sides if @left_paddle.collide_right(@ball)
+    @ball.bounce_top_bottom if @left_paddle.collide_top(@ball) || @left_paddle.collide_bottom(@ball)
   end
 
   def ball_collision_check_with_right_paddle
-    if @right_paddle.collide_left(@ball)
-      @ball.bounce_sides
-    end
+    @ball.bounce_sides if @right_paddle.collide_left(@ball)
+    @ball.bounce_top_bottom if @right_paddle.collide_top(@ball) || @right_paddle.collide_bottom(@ball)
   end
 
   def ball_collision_check_with_top
@@ -63,19 +63,19 @@ class MainGameScene < Scene
   end
 
   def right_paddle_up_pressed_no_down
-    return @args.inputs.keyboard.up_arrow && !@args.inputs.keyboard.down_arrow
+    @args.inputs.keyboard.up_arrow && !@args.inputs.keyboard.down_arrow
   end
 
   def right_paddle_down_pressed_no_up
-    return @args.inputs.keyboard.down_arrow && !@args.inputs.keyboard.up_arrow
+    @args.inputs.keyboard.down_arrow && !@args.inputs.keyboard.up_arrow
   end
 
   def left_paddle_up_pressed_no_down
-    return @args.inputs.keyboard.w && !@args.inputs.keyboard.s
+    @args.inputs.keyboard.w && !@args.inputs.keyboard.s
   end
 
   def left_paddle_down_pressed_no_up
-    return @args.inputs.keyboard.s && !@args.inputs.keyboard.w
+    @args.inputs.keyboard.s && !@args.inputs.keyboard.w
   end
 
   def display_ui(args)
@@ -84,16 +84,17 @@ class MainGameScene < Scene
 
     # score
     args.outputs.labels << [args.grid.left, args.grid.top, 'Left Score', 0, 0, 255, 255, 255]
-    args.outputs.labels << [args.grid.left, args.grid.top - 16, '%04d' % @left_score, 5, 0, 255, 255, 255]
+    args.outputs.labels << [args.grid.left, args.grid.top - 16, format('%04d', @left_score), 5, 0, 255, 255, 255]
 
     args.outputs.labels << [args.grid.left + 150, args.grid.top, 'Right Score', 0, 0, 255, 255, 255]
-    args.outputs.labels << [args.grid.left + 150, args.grid.top - 16, '%04d' % @right_score, 5, 0, 255, 255, 255]
+    args.outputs.labels << [args.grid.left + 150, args.grid.top - 16, format('%04d', @right_score), 5, 0, 255, 255, 255]
 
     # time
     args.outputs.labels << [args.grid.left + 300, args.grid.top, 'Time', 0, 0, 255, 255, 255]
-    seconds = '%05.2f' % (0.elapsed_time / 60 % 60)
-    minutes = '%02d' % (0.elapsed_time / 60 / 60 % 60)
-    hours = '%02d' % (0.elapsed_time / 60 / 60 / 60)
-    args.outputs.labels << [args.grid.left + 300, args.grid.top - 16, "#{hours}:#{minutes}:#{seconds}", 5, 0, 255, 255, 255]
+    seconds = format('%05.2f', (0.elapsed_time / 60 % 60))
+    minutes = format('%02d', (0.elapsed_time / 60 / 60 % 60))
+    hours = format('%02d', (0.elapsed_time / 60 / 60 / 60))
+    args.outputs.labels << [args.grid.left + 300, args.grid.top - 16, "#{hours}:#{minutes}:#{seconds}", 5, 0, 255, 255,
+                            255]
   end
 end
