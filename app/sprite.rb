@@ -76,4 +76,8 @@ class Sprite
   def top_y
     return @y + @h
   end
+
+  def right_x
+    return @x + @w
+  end
 end

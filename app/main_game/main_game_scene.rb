@@ -10,9 +10,20 @@ class MainGameScene < Scene
 
     @ui_bottom = args.grid.top - 80
 
-    @ball = Ball.new(args, args.grid.right / 2, args.grid.top / 2)
+    @balls = []
 
-    @sprites = [@left_paddle, @right_paddle, @ball]
+    reset_round
+
+    @paddles = [@left_paddle, @right_paddle]
+
+    @sprites = [@paddles, @balls]
+  end
+
+  def reset_round
+    puts "New round"
+    @ball = Ball.new(@args, @args.grid.right / 2, @args.grid.top / 2)
+
+    @balls[0] = @ball
   end
 
   def tick(args)
@@ -32,7 +43,9 @@ class MainGameScene < Scene
     ball_collision_check_with_right_paddle
     ball_collision_check_with_top
     ball_collision_check_with_bottom
-    @sprites.each { |sprite| sprite.calculate(@args) }
+    ball_score_for_left_paddle
+    ball_score_for_right_paddle
+    @sprites.each { |sprite_group| sprite_group.each { |sprite| sprite.calculate(@args) } }
   end
 
   def ball_collision_check_with_left_paddle
@@ -51,6 +64,20 @@ class MainGameScene < Scene
 
   def ball_collision_check_with_bottom
     @ball.bounce_top_bottom if @ball.y <= @args.grid.bottom
+  end
+
+  def ball_score_for_left_paddle
+    if @ball.x > @args.grid.right
+      @left_score += 1
+      reset_round
+    end
+  end
+
+  def ball_score_for_right_paddle
+    if @ball.right_x < @args.grid.left
+      @right_score += 1
+      reset_round
+    end
   end
 
   def input_checking
