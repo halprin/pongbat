@@ -20,10 +20,16 @@ class MainGameScene < Scene
   end
 
   def reset_round
-    puts "New round"
-    @ball = Ball.new(@args, @args.grid.right / 2, @args.grid.top / 2)
+    number_of_balls = rand(10) + 1
 
-    @balls[0] = @ball
+    third_of_width = @args.grid.w / 3
+    third_of_height = (@args.grid.h - (@args.grid.h - @ui_bottom)) / 3
+
+    number_of_balls.each { |ball_index|
+      random_start_x = rand(third_of_width) + third_of_width
+      random_start_y = rand(third_of_height) + third_of_height
+      @balls[ball_index] = Ball.new(@args, random_start_x, random_start_y)
+    }
   end
 
   def tick(args)
@@ -34,7 +40,8 @@ class MainGameScene < Scene
 
   def render
     @args.outputs.background_color = [255, 255, 255]
-    @args.outputs.sprites << @sprites
+    @args.outputs.sprites << @paddles
+    @args.outputs.sprites << @balls
     display_ui(@args)
   end
 
@@ -53,35 +60,43 @@ class MainGameScene < Scene
   end
 
   def ball_collision_check_with_left_paddle
-    @ball.bounce_sides if @left_paddle.collide_right(@ball)
-    @ball.bounce_top_bottom if @left_paddle.collide_top(@ball) || @left_paddle.collide_bottom(@ball)
+    @balls.each do |ball|
+      ball.bounce_sides if @left_paddle.collide_right(ball)
+      ball.bounce_top_bottom if @left_paddle.collide_top(ball) || @left_paddle.collide_bottom(ball)
+    end
   end
 
   def ball_collision_check_with_right_paddle
-    @ball.bounce_sides if @right_paddle.collide_left(@ball)
-    @ball.bounce_top_bottom if @right_paddle.collide_top(@ball) || @right_paddle.collide_bottom(@ball)
+    @balls.each do |ball|
+      ball.bounce_sides if @right_paddle.collide_left(ball)
+      ball.bounce_top_bottom if @right_paddle.collide_top(ball) || @right_paddle.collide_bottom(ball)
+    end
   end
 
   def ball_collision_check_with_top
-    @ball.bounce_top_bottom if @ball.top_y >= @ui_bottom
+    @balls.each do |ball|
+      ball.bounce_top_bottom if ball.top_y >= @ui_bottom
+    end
   end
 
   def ball_collision_check_with_bottom
-    @ball.bounce_top_bottom if @ball.y <= @args.grid.bottom
+    @balls.each do |ball|
+      ball.bounce_top_bottom if ball.y <= @args.grid.bottom
+    end
   end
 
   def ball_score_for_left_paddle
-    if @ball.x > @args.grid.right
-      @left_score += 1
-      reset_round
-    end
+    # if @ball.x > @args.grid.right
+    #   @left_score += 1
+    #   reset_round
+    # end
   end
 
   def ball_score_for_right_paddle
-    if @ball.right_x < @args.grid.left
-      @right_score += 1
-      reset_round
-    end
+    # if @ball.right_x < @args.grid.left
+    #   @right_score += 1
+    #   reset_round
+    # end
   end
 
   def paddles_collision_with_top

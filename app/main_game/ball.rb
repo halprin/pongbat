@@ -6,8 +6,10 @@ class Ball < Sprite
   def initialize(args, starting_x, starting_y)
     super(args, '/sprites/ball/red.png', starting_x, starting_y, @@width, @@height)
 
-    @dx = 5.randomize(:sign)
-    @dy = 5.randomize(:sign)
+
+
+    @dx = (rand(5) + 1) * [1, -1].sample
+    @dy = (rand(5) + 1) * [1, -1].sample
 
   end
 

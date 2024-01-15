@@ -1,4 +1,4 @@
-$gtk.reset seed: 26
+# $gtk.reset seed: 26
 
 require '/app/scene.rb'
 require '/app/sprite.rb'
