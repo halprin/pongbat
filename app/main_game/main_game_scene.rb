@@ -10,13 +10,13 @@ class MainGameScene < Scene
 
     @ui_bottom = args.grid.top - 80
 
-    @balls = []
+    @balls = {}
 
     reset_round
 
     @paddles = [@left_paddle, @right_paddle]
 
-    @sprites = [@paddles, @balls]
+    @sprites = [@paddles, @balls.values]
   end
 
   def reset_round
@@ -40,8 +40,7 @@ class MainGameScene < Scene
 
   def render
     @args.outputs.background_color = [255, 255, 255]
-    @args.outputs.sprites << @paddles
-    @args.outputs.sprites << @balls
+    @args.outputs.sprites << @sprites
     display_ui(@args)
   end
 
@@ -50,8 +49,8 @@ class MainGameScene < Scene
     ball_collision_check_with_right_paddle
     ball_collision_check_with_top
     ball_collision_check_with_bottom
-    ball_score_for_left_paddle
-    ball_score_for_right_paddle
+    ball_pass_right_paddle
+    ball_pass_left_paddle
 
     paddles_collision_with_top
     paddles_collision_with_bottom
@@ -60,43 +59,49 @@ class MainGameScene < Scene
   end
 
   def ball_collision_check_with_left_paddle
-    @balls.each do |ball|
+    @balls.each_value do |ball|
       ball.bounce_sides if @left_paddle.collide_right(ball)
       ball.bounce_top_bottom if @left_paddle.collide_top(ball) || @left_paddle.collide_bottom(ball)
     end
   end
 
   def ball_collision_check_with_right_paddle
-    @balls.each do |ball|
+    @balls.each_value do |ball|
       ball.bounce_sides if @right_paddle.collide_left(ball)
       ball.bounce_top_bottom if @right_paddle.collide_top(ball) || @right_paddle.collide_bottom(ball)
     end
   end
 
   def ball_collision_check_with_top
-    @balls.each do |ball|
+    @balls.each_value do |ball|
       ball.bounce_top_bottom if ball.top_y >= @ui_bottom
     end
   end
 
   def ball_collision_check_with_bottom
-    @balls.each do |ball|
+    @balls.each_value do |ball|
       ball.bounce_top_bottom if ball.y <= @args.grid.bottom
     end
   end
 
-  def ball_score_for_left_paddle
-    # if @ball.x > @args.grid.right
-    #   @left_score += 1
-    #   reset_round
-    # end
+  def ball_pass_right_paddle
+    @balls.delete_if { |ball_key, ball_value| ball_value.x > @args.grid.right }
+    @sprites[1] = @balls.values
+
+    if @balls.length == 0
+      @left_score += 1
+      reset_round
+    end
   end
 
-  def ball_score_for_right_paddle
-    # if @ball.right_x < @args.grid.left
-    #   @right_score += 1
-    #   reset_round
-    # end
+  def ball_pass_left_paddle
+    @balls.delete_if { |ball_key, ball_value| ball_value.right_x < @args.grid.left }
+    @sprites[1] = @balls.values
+
+    if @balls.length == 0
+      @right_score += 1
+      reset_round
+    end
   end
 
   def paddles_collision_with_top
