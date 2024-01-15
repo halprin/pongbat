@@ -21,6 +21,14 @@ class Ball < Sprite
     @dy *= -1
   end
 
+  def left_claim
+    @path = '/sprites/ball/blue.png'
+  end
+
+  def right_claim
+    @path = '/sprites/ball/red.png'
+  end
+
   # Calculation methods
 
   def calculate(args)

@@ -60,15 +60,25 @@ class MainGameScene < Scene
 
   def ball_collision_check_with_left_paddle
     @balls.each_value do |ball|
-      ball.bounce_sides if @left_paddle.collide_right(ball)
-      ball.bounce_top_bottom if @left_paddle.collide_top(ball) || @left_paddle.collide_bottom(ball)
+      if @left_paddle.collide_right(ball)
+        ball.bounce_sides
+        ball.left_claim
+      elsif @left_paddle.collide_top(ball) || @left_paddle.collide_bottom(ball)
+        ball.bounce_top_bottom
+        ball.left_claim
+      end
     end
   end
 
   def ball_collision_check_with_right_paddle
     @balls.each_value do |ball|
-      ball.bounce_sides if @right_paddle.collide_left(ball)
-      ball.bounce_top_bottom if @right_paddle.collide_top(ball) || @right_paddle.collide_bottom(ball)
+      if @right_paddle.collide_left(ball)
+        ball.bounce_sides
+        ball.right_claim
+      elsif @right_paddle.collide_top(ball) || @right_paddle.collide_bottom(ball)
+        ball.bounce_top_bottom
+        ball.right_claim
+      end
     end
   end
 
