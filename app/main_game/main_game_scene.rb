@@ -5,31 +5,42 @@ class MainGameScene < Scene
     @left_score = 0
     @right_score = 0
 
-    @left_paddle = Paddle.new(args, 'blue.png',args.grid.left + 10, args.grid.top - Paddle.height - 200)
-    @right_paddle = Paddle.new(args, 'red.png',args.grid.right - Paddle.width - 10, args.grid.top - Paddle.height - 200)
+    @left_paddle = Paddle.new(args, 'blue.png', args.grid.left + 10, args.grid.top - Paddle.height - 200)
+    @right_paddle = Paddle.new(args, 'red.png', args.grid.right - Paddle.width - 10, args.grid.top - Paddle.height - 200)
 
     @ui_bottom = args.grid.top - 80
 
     @balls = {}
 
-    reset_round
+    @blocks = {}
 
     @paddles = [@left_paddle, @right_paddle]
 
-    @sprites = [@paddles, @balls.values]
+    reset_round
+
   end
 
   def reset_round
-    number_of_balls = rand(10) + 1
-
     third_of_width = @args.grid.w / 3
     third_of_height = (@args.grid.h - (@args.grid.h - @ui_bottom)) / 3
+
+    number_of_balls = rand(10) + 1
 
     number_of_balls.each { |ball_index|
       random_start_x = rand(third_of_width) + third_of_width
       random_start_y = rand(third_of_height) + third_of_height
       @balls[ball_index] = Ball.new(@args, random_start_x, random_start_y)
     }
+
+    number_of_blocks = rand(5) + 1
+
+    number_of_blocks.each { |block_index|
+      random_start_x = rand(third_of_width) + third_of_width
+      random_start_y = rand(third_of_height) + third_of_height
+      @blocks[block_index] = SpeedUpBlock.new(@args, random_start_x, random_start_y)
+    }
+
+    @sprites = [@paddles, @balls.values, @blocks.values]
   end
 
   def tick(args)
@@ -51,6 +62,7 @@ class MainGameScene < Scene
     ball_collision_check_with_bottom
     ball_pass_right_paddle
     ball_pass_left_paddle
+    ball_collision_check_with_blocks
 
     paddles_collision_with_top
     paddles_collision_with_bottom
@@ -111,6 +123,41 @@ class MainGameScene < Scene
     if @balls.length == 0
       @right_score += 1
       reset_round
+    end
+  end
+
+  def ball_collision_check_with_blocks
+    blocks_to_delete = []
+
+    @blocks.each do |block_key, block|
+      @balls.each_value do |ball|
+        if block.collide_left(ball)
+          ball.bounce_sides
+          ball.x = block.x - ball.w - 1
+          block.apply_difference(ball)
+          blocks_to_delete.append(block_key)
+        elsif block.collide_right(ball)
+          ball.bounce_sides
+          ball.x = block.x + block.w + 1
+          block.apply_difference(ball)
+          blocks_to_delete.append(block_key)
+        elsif block.collide_top(ball)
+          ball.bounce_top_bottom
+          ball.y = block.y + block.h + 1
+          block.apply_difference(ball)
+          blocks_to_delete.append(block_key)
+        elsif block.collide_bottom(ball)
+          ball.bounce_top_bottom
+          ball.y = block.y - ball.h - 1
+          block.apply_difference(ball)
+          blocks_to_delete.append(block_key)
+        end
+      end
+    end
+
+    blocks_to_delete.each { |block_key| @blocks.delete(block_key) }
+    if blocks_to_delete.length > 0
+      @sprites[2] = @blocks.values
     end
   end
 

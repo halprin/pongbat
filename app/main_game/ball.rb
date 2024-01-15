@@ -29,6 +29,12 @@ class Ball < Sprite
     @path = '/sprites/ball/red.png'
   end
 
+  def speed_up
+    # add 1 or subtract 1, depending on whether we already have a positive or negative dx, dy
+    @dx += @dx / @dx.abs
+    @dy += @dy / @dy.abs
+  end
+
   # Calculation methods
 
   def calculate(args)
