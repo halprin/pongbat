@@ -13,6 +13,7 @@ require '/app/main_game/paddle.rb'
 require '/app/main_game/ball.rb'
 require '/app/main_game/block.rb'
 require '/app/main_game/speed_up_block.rb'
+require '/app/main_game/speed_down_block.rb'
 
 # game over scene
 require '/app/game_over/game_over_scene.rb'

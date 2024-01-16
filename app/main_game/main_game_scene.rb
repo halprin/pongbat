@@ -58,7 +58,13 @@ class MainGameScene < Scene
       @sprites[2] = @blocks.values
     end
 
-    @blocks[block_index] = SpeedUpBlock.new(@args, random_start_x, random_start_y, remove_this_block)
+    block_choice = rand(2)
+    if block_choice == 0
+      @blocks[block_index] = SpeedUpBlock.new(@args, random_start_x, random_start_y, remove_this_block)
+    elsif block_choice == 1
+      @blocks[block_index] = SpeedDownBlock.new(@args, random_start_x, random_start_y, remove_this_block)
+    end
+
   end
 
   def tick(args)
@@ -202,7 +208,7 @@ class MainGameScene < Scene
     if @args.state.tick_count >= @next_block_creation_frame
       create_random_block(@blocks.length + 1)
       @sprites[2] = @blocks.values
-      @next_block_creation_frame = (rand(20) + 1) * 60 + @args.state.tick_count
+      @next_block_creation_frame = (rand(20) + 1) * 60 + @args.state.tick_count  # random between 1 - 20 seconds from now
     end
   end
 

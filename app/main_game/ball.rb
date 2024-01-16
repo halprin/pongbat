@@ -35,6 +35,12 @@ class Ball < Sprite
     @dy += @dy / @dy.abs
   end
 
+  def speed_down
+    # add 1 or subtract 1, depending on whether we already have a positive or negative dx, dy
+    @dx -= @dx / @dx.abs
+    @dy -= @dy / @dy.abs
+  end
+
   # Calculation methods
 
   def calculate(args)
