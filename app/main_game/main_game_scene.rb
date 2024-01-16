@@ -35,26 +35,30 @@ class MainGameScene < Scene
       @balls[ball_index] = Ball.new(@args, random_start_x, random_start_y)
     }
 
-    fourth_of_width = @args.grid.w / 4
-    fourth_of_height = (@args.grid.h - (@args.grid.h - @ui_bottom)) / 4
-
     number_of_blocks = rand(5) + 1
 
-
-
     number_of_blocks.each { |block_index|
-      random_start_x = rand(fourth_of_width * 2) + fourth_of_width
-      random_start_y = rand(fourth_of_height * 2) + fourth_of_height
-
-      remove_this_block = proc do
-        @blocks.delete(block_index)
-        @sprites[2] = @blocks.values
-      end
-
-      @blocks[block_index] = SpeedUpBlock.new(@args, random_start_x, random_start_y, remove_this_block)
+      create_random_block(block_index)
     }
 
     @sprites = [@paddles, @balls.values, @blocks.values]
+
+    @next_block_creation_frame = (rand(20) + 1) * 60 + @args.state.tick_count  # random between 1 - 20 seconds from now
+  end
+
+  def create_random_block(block_index)
+    fourth_of_width = @args.grid.w / 4
+    fourth_of_height = (@args.grid.h - (@args.grid.h - @ui_bottom)) / 4
+
+    random_start_x = rand(fourth_of_width * 2) + fourth_of_width
+    random_start_y = rand(fourth_of_height * 2) + fourth_of_height
+
+    remove_this_block = proc do
+      @blocks.delete(block_index)
+      @sprites[2] = @blocks.values
+    end
+
+    @blocks[block_index] = SpeedUpBlock.new(@args, random_start_x, random_start_y, remove_this_block)
   end
 
   def tick(args)
@@ -80,6 +84,8 @@ class MainGameScene < Scene
 
     paddles_collision_with_top
     paddles_collision_with_bottom
+
+    decide_to_make_next_block
 
     @sprites.each { |sprite_group| sprite_group.each { |sprite| sprite.calculate(@args) } }
   end
@@ -189,6 +195,14 @@ class MainGameScene < Scene
       @right_paddle.prevent_down
     else
       @right_paddle.allow_down
+    end
+  end
+
+  def decide_to_make_next_block
+    if @args.state.tick_count >= @next_block_creation_frame
+      create_random_block(@blocks.length + 1)
+      @sprites[2] = @blocks.values
+      @next_block_creation_frame = (rand(20) + 1) * 60 + @args.state.tick_count
     end
   end
 
