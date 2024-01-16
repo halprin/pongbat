@@ -21,6 +21,9 @@ class MainGameScene < Scene
   end
 
   def reset_round
+    @balls.clear
+    @blocks.clear
+
     third_of_width = @args.grid.w / 3
     third_of_height = (@args.grid.h - (@args.grid.h - @ui_bottom)) / 3
 
@@ -32,12 +35,23 @@ class MainGameScene < Scene
       @balls[ball_index] = Ball.new(@args, random_start_x, random_start_y)
     }
 
+    fourth_of_width = @args.grid.w / 4
+    fourth_of_height = (@args.grid.h - (@args.grid.h - @ui_bottom)) / 4
+
     number_of_blocks = rand(5) + 1
 
+
+
     number_of_blocks.each { |block_index|
-      random_start_x = rand(third_of_width) + third_of_width
-      random_start_y = rand(third_of_height) + third_of_height
-      @blocks[block_index] = SpeedUpBlock.new(@args, random_start_x, random_start_y)
+      random_start_x = rand(fourth_of_width * 2) + fourth_of_width
+      random_start_y = rand(fourth_of_height * 2) + fourth_of_height
+
+      remove_this_block = proc do
+        @blocks.delete(block_index)
+        @sprites[2] = @blocks.values
+      end
+
+      @blocks[block_index] = SpeedUpBlock.new(@args, random_start_x, random_start_y, remove_this_block)
     }
 
     @sprites = [@paddles, @balls.values, @blocks.values]
@@ -127,37 +141,26 @@ class MainGameScene < Scene
   end
 
   def ball_collision_check_with_blocks
-    blocks_to_delete = []
-
-    @blocks.each do |block_key, block|
+    @blocks.each_value do |block|
       @balls.each_value do |ball|
         if block.collide_left(ball)
           ball.bounce_sides
           ball.x = block.x - ball.w - 1
           block.apply_difference(ball)
-          blocks_to_delete.append(block_key)
         elsif block.collide_right(ball)
           ball.bounce_sides
           ball.x = block.x + block.w + 1
           block.apply_difference(ball)
-          blocks_to_delete.append(block_key)
         elsif block.collide_top(ball)
           ball.bounce_top_bottom
           ball.y = block.y + block.h + 1
           block.apply_difference(ball)
-          blocks_to_delete.append(block_key)
         elsif block.collide_bottom(ball)
           ball.bounce_top_bottom
           ball.y = block.y - ball.h - 1
           block.apply_difference(ball)
-          blocks_to_delete.append(block_key)
         end
       end
-    end
-
-    blocks_to_delete.each { |block_key| @blocks.delete(block_key) }
-    if blocks_to_delete.length > 0
-      @sprites[2] = @blocks.values
     end
   end
 
