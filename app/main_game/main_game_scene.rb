@@ -61,15 +61,6 @@ class MainGameScene < Scene
     random_start_x = rand(fourth_of_width * 2) + fourth_of_width
     random_start_y = rand(fourth_of_height * 2) + fourth_of_height
 
-    remove_this_block = proc do |block_id|
-      puts "deleting block #{block_id}"
-      @blocks.delete(block_id)
-    end
-
-    create_new_ball = proc do
-      create_random_ball
-    end
-
     block_choice = rand(3)
     case block_choice
     when 0
@@ -77,7 +68,7 @@ class MainGameScene < Scene
     when 1
       new_block = SpeedDownBlock.new(@args, random_start_x, random_start_y, @blocks)
     when 2
-      new_block = ExtraBallBlock.new(@args, random_start_x, random_start_y, create_new_ball, @blocks)
+      new_block = ExtraBallBlock.new(@args, random_start_x, random_start_y, method(:create_random_ball), @blocks)
     end
 
     puts "creating new block #{new_block.object_id}"
