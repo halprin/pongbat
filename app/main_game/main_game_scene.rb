@@ -61,7 +61,7 @@ class MainGameScene < Scene
     random_start_x = rand(fourth_of_width * 2) + fourth_of_width
     random_start_y = rand(fourth_of_height * 2) + fourth_of_height
 
-    block_choice = rand(3)
+    block_choice = rand(4)
     case block_choice
     when 0
       new_block = SpeedUpBlock.new(@args, random_start_x, random_start_y, @blocks)
@@ -69,6 +69,8 @@ class MainGameScene < Scene
       new_block = SpeedDownBlock.new(@args, random_start_x, random_start_y, @blocks)
     when 2
       new_block = ExtraBallBlock.new(@args, random_start_x, random_start_y, method(:create_random_ball), @blocks)
+    when 3
+      new_block = RemoveBallBlock.new(@args, random_start_x, random_start_y, @balls, @blocks)
     end
 
     puts "creating new block #{new_block.object_id}"
