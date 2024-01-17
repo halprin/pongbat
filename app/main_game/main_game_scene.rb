@@ -24,50 +24,68 @@ class MainGameScene < Scene
     @balls.clear
     @blocks.clear
 
-    third_of_width = @args.grid.w / 3
-    third_of_height = (@args.grid.h - (@args.grid.h - @ui_bottom)) / 3
-
     number_of_balls = rand(10) + 1
 
     number_of_balls.each { |ball_index|
-      random_start_x = rand(third_of_width) + third_of_width
-      random_start_y = rand(third_of_height) + third_of_height
-      @balls[ball_index] = Ball.new(@args, random_start_x, random_start_y)
+      create_random_ball
     }
 
     number_of_blocks = rand(5) + 1
 
     number_of_blocks.each { |block_index|
-      create_random_block(block_index)
+      create_random_block
     }
 
     @sprites = [@paddles, @balls.values, @blocks.values]
 
-    @next_block_creation_frame = (rand(20) + 1) * 60 + @args.state.tick_count  # random between 1 - 20 seconds from now
+    @next_block_creation_frame = (rand(10) + 1) * 60 + @args.state.tick_count  # random between 1 - 10 seconds from now
   end
 
-  def create_random_block(block_index)
+  def create_random_ball
+    third_of_width = @args.grid.w / 3
+    third_of_height = (@args.grid.h - (@args.grid.h - @ui_bottom)) / 3
+
+    random_start_x = rand(third_of_width) + third_of_width
+    random_start_y = rand(third_of_height) + third_of_height
+
+    new_ball = Ball.new(@args, random_start_x, random_start_y)
+
+    puts "creating new ball #{new_ball.object_id}"
+    @balls[new_ball.object_id] = new_ball
+  end
+
+  def create_random_block
     fourth_of_width = @args.grid.w / 4
     fourth_of_height = (@args.grid.h - (@args.grid.h - @ui_bottom)) / 4
 
     random_start_x = rand(fourth_of_width * 2) + fourth_of_width
     random_start_y = rand(fourth_of_height * 2) + fourth_of_height
 
-    remove_this_block = proc do
-      @blocks.delete(block_index)
-      @sprites[2] = @blocks.values
+    remove_this_block = proc do |block_id|
+      puts "deleting block #{block_id}"
+      @blocks.delete(block_id)
     end
 
-    block_choice = rand(2)
-    if block_choice == 0
-      @blocks[block_index] = SpeedUpBlock.new(@args, random_start_x, random_start_y, remove_this_block)
-    elsif block_choice == 1
-      @blocks[block_index] = SpeedDownBlock.new(@args, random_start_x, random_start_y, remove_this_block)
+    create_new_ball = proc do
+      create_random_ball
     end
 
+    block_choice = rand(3)
+    case block_choice
+    when 0
+      new_block = SpeedUpBlock.new(@args, random_start_x, random_start_y, remove_this_block)
+    when 1
+      new_block = SpeedDownBlock.new(@args, random_start_x, random_start_y, remove_this_block)
+    when 2
+      new_block = ExtraBallBlock.new(@args, random_start_x, random_start_y, create_new_ball, remove_this_block)
+    end
+
+    puts "creating new block #{new_block.object_id}"
+    @blocks[new_block.object_id] = new_block
   end
 
   def tick(args)
+    @sprites = [@paddles, @balls.values, @blocks.values]
     render
     calculations
     input_checking
@@ -134,7 +152,6 @@ class MainGameScene < Scene
 
   def ball_pass_right_paddle
     @balls.delete_if { |ball_key, ball_value| ball_value.x > @args.grid.right }
-    @sprites[1] = @balls.values
 
     if @balls.length == 0
       @left_score += 1
@@ -144,7 +161,6 @@ class MainGameScene < Scene
 
   def ball_pass_left_paddle
     @balls.delete_if { |ball_key, ball_value| ball_value.right_x < @args.grid.left }
-    @sprites[1] = @balls.values
 
     if @balls.length == 0
       @right_score += 1
@@ -206,9 +222,8 @@ class MainGameScene < Scene
 
   def decide_to_make_next_block
     if @args.state.tick_count >= @next_block_creation_frame
-      create_random_block(@blocks.length + 1)
-      @sprites[2] = @blocks.values
-      @next_block_creation_frame = (rand(20) + 1) * 60 + @args.state.tick_count  # random between 1 - 20 seconds from now
+      create_random_block
+      @next_block_creation_frame = (rand(10) + 1) * 60 + @args.state.tick_count  # random between 1 - 10 seconds from now
     end
   end
 

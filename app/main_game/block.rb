@@ -20,7 +20,7 @@ class Block < Sprite
 
   def calculate(args)
     if @creation_frame.elapsed_time >= @duration_of_existence_frames
-      @remove_block_function.call
+      @remove_block_function.call(object_id)
     end
   end
 end
