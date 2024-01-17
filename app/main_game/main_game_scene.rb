@@ -48,7 +48,7 @@ class MainGameScene < Scene
     random_start_x = rand(third_of_width) + third_of_width
     random_start_y = rand(third_of_height) + third_of_height
 
-    new_ball = Ball.new(@args, random_start_x, random_start_y)
+    new_ball = UnclaimedBall.new(@args, random_start_x, random_start_y)
 
     puts "creating new ball #{new_ball.object_id}"
     @balls[new_ball.object_id] = new_ball
@@ -111,10 +111,16 @@ class MainGameScene < Scene
     @balls.each_value do |ball|
       if @left_paddle.collide_right(ball)
         ball.bounce_sides
+        @balls.delete(ball.object_id)
+        claimed_ball = BlueBall.new(@args, ball)
+        claimed_ball.x = @left_paddle.right_x
+        @balls[claimed_ball.object_id] = claimed_ball
         ball.left_claim
       elsif @left_paddle.collide_top(ball) || @left_paddle.collide_bottom(ball)
         ball.bounce_top_bottom
-        ball.left_claim
+        @balls.delete(ball.object_id)
+        claimed_ball = BlueBall.new(@args, ball)
+        @balls[claimed_ball.object_id] = claimed_ball
       end
     end
   end
@@ -123,10 +129,15 @@ class MainGameScene < Scene
     @balls.each_value do |ball|
       if @right_paddle.collide_left(ball)
         ball.bounce_sides
-        ball.right_claim
+        @balls.delete(ball.object_id)
+        claimed_ball = RedBall.new(@args, ball)
+        @balls[claimed_ball.object_id] = claimed_ball
+        claimed_ball.x = @right_paddle.x - claimed_ball.w
       elsif @right_paddle.collide_top(ball) || @right_paddle.collide_bottom(ball)
         ball.bounce_top_bottom
-        ball.right_claim
+        @balls.delete(ball.object_id)
+        claimed_ball = RedBall.new(@args, ball)
+        @balls[claimed_ball.object_id] = claimed_ball
       end
     end
   end
