@@ -1,7 +1,7 @@
 class SpeedDownBlock < Block
 
-  def initialize(args, starting_x, starting_y, remove_block_function)
-    super(args, 'speed_down.png', starting_x, starting_y, remove_block_function)
+  def initialize(args, starting_x, starting_y, blocks)
+    super(args, 'speed_down.png', starting_x, starting_y, blocks)
   end
 
   # Action methods

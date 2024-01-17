@@ -26,13 +26,13 @@ class MainGameScene < Scene
 
     number_of_balls = rand(10) + 1
 
-    number_of_balls.each { |ball_index|
+    number_of_balls.each { |_|
       create_random_ball
     }
 
     number_of_blocks = rand(5) + 1
 
-    number_of_blocks.each { |block_index|
+    number_of_blocks.each { |_|
       create_random_block
     }
 
@@ -73,11 +73,11 @@ class MainGameScene < Scene
     block_choice = rand(3)
     case block_choice
     when 0
-      new_block = SpeedUpBlock.new(@args, random_start_x, random_start_y, remove_this_block)
+      new_block = SpeedUpBlock.new(@args, random_start_x, random_start_y, @blocks)
     when 1
-      new_block = SpeedDownBlock.new(@args, random_start_x, random_start_y, remove_this_block)
+      new_block = SpeedDownBlock.new(@args, random_start_x, random_start_y, @blocks)
     when 2
-      new_block = ExtraBallBlock.new(@args, random_start_x, random_start_y, create_new_ball, remove_this_block)
+      new_block = ExtraBallBlock.new(@args, random_start_x, random_start_y, create_new_ball, @blocks)
     end
 
     puts "creating new block #{new_block.object_id}"
