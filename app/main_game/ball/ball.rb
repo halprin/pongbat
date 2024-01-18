@@ -20,14 +20,6 @@ class Ball < Sprite
     @dy *= -1
   end
 
-  def left_claim
-    @path = '/sprites/ball/blue.png'
-  end
-
-  def right_claim
-    @path = '/sprites/ball/red.png'
-  end
-
   def speed_up
     # add 1 or subtract 1, depending on whether we already have a positive or negative dx, dy
     @dx += @dx / @dx.abs

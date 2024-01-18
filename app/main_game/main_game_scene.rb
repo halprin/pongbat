@@ -61,7 +61,8 @@ class MainGameScene < Scene
     random_start_x = rand(fourth_of_width * 2) + fourth_of_width
     random_start_y = rand(fourth_of_height * 2) + fourth_of_height
 
-    block_choice = rand(4)
+    # block_choice = rand(5)
+    block_choice = 4
     case block_choice
     when 0
       new_block = SpeedUpBlock.new(@args, random_start_x, random_start_y, @blocks)
@@ -71,6 +72,8 @@ class MainGameScene < Scene
       new_block = ExtraBallBlock.new(@args, random_start_x, random_start_y, method(:create_random_ball), @blocks)
     when 3
       new_block = RemoveBallBlock.new(@args, random_start_x, random_start_y, @balls, @blocks)
+    when 4
+      new_block = DrunkBallBlock.new(@args, random_start_x, random_start_y, @balls, @blocks)
     end
 
     puts "creating new block #{new_block.object_id}"
@@ -115,7 +118,6 @@ class MainGameScene < Scene
         claimed_ball = BlueBall.new(@args, ball)
         claimed_ball.x = @left_paddle.right_x
         @balls[claimed_ball.object_id] = claimed_ball
-        ball.left_claim
       elsif @left_paddle.collide_top(ball) || @left_paddle.collide_bottom(ball)
         ball.bounce_top_bottom
         @balls.delete(ball.object_id)
