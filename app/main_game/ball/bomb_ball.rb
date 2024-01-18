@@ -6,6 +6,10 @@ class BombBall < Ball
 
   # Action methods
 
+  def explode
+
+  end
+
   # Calculation methods
 
 end

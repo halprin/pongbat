@@ -24,6 +24,7 @@ require '/app/main_game/block/speed_down_block.rb'
 require '/app/main_game/block/extra_ball_block.rb'
 require '/app/main_game/block/remove_ball_block.rb'
 require '/app/main_game/block/drunk_ball_block.rb'
+require '/app/main_game/block/bomb_ball_block.rb'
 
 # game over scene
 require '/app/game_over/game_over_scene.rb'
