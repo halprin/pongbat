@@ -78,7 +78,7 @@ class MainGameScene < Scene
     when 4
       new_block = DrunkBallBlock.new(@args, random_start_x, random_start_y, @balls, @blocks)
     when 5
-      new_block = BombBallBlock.new(@args, random_start_x, random_start_y, @balls, @blocks)
+      new_block = BombBallBlock.new(@args, random_start_x, random_start_y, @balls, @blocks, @explosions)
     end
 
     puts "creating new block #{new_block.object_id}"
@@ -165,12 +165,11 @@ class MainGameScene < Scene
   def ball_pass_right_paddle
     @balls.delete_if do |ball_key, ball_value|
       ball_passed = ball_value.x > @args.grid.right
-      if ball_passed && ball_value.is_a?(BombBall)
-        new_explosion = Explosion.new(@args, ball_value.x, ball_value.y, @explosions)
-        @explosions[new_explosion.object_id] = new_explosion
+      if ball_passed
+        ball_value.ball_passes_paddle
       end
 
-      ball_passed
+      return ball_passed
     end
 
     if @balls.length == 0
@@ -182,12 +181,11 @@ class MainGameScene < Scene
   def ball_pass_left_paddle
     @balls.delete_if do |ball_key, ball_value|
       ball_passed = ball_value.right_x < @args.grid.left
-      if ball_passed && ball_value.is_a?(BombBall)
-        new_explosion = Explosion.new(@args, ball_value.x, ball_value.y, @explosions)
-        @explosions[new_explosion.object_id] = new_explosion
+      if ball_passed
+        ball_value.ball_passes_paddle
       end
 
-      ball_passed
+      return ball_passed
     end
 
     if @balls.length == 0

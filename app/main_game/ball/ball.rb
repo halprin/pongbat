@@ -37,6 +37,10 @@ class Ball < Sprite
     end
   end
 
+  def ball_passes_paddle
+    # no default implementation
+  end
+
   # Calculation methods
 
   def calculate(args)
