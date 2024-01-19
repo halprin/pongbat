@@ -14,6 +14,8 @@ class MainGameScene < Scene
 
     @blocks = {}
 
+    @explosions = {}
+
     @paddles = [@left_paddle, @right_paddle]
 
     reset_round
@@ -23,6 +25,7 @@ class MainGameScene < Scene
   def reset_round
     @balls.clear
     @blocks.clear
+    @explosions.clear
 
     number_of_balls = rand(10) + 1
 
@@ -36,7 +39,10 @@ class MainGameScene < Scene
       create_random_block
     }
 
-    @sprites = [@paddles, @balls.values, @blocks.values]
+    an_explosion = Explosion.new(@args, 300, 300, @explosions)
+    @explosions[an_explosion.object_id] = an_explosion
+
+    @sprites = [@paddles, @balls.values, @blocks.values, @explosions.values]
 
     @next_block_creation_frame = (rand(10) + 1) * 60 + @args.state.tick_count  # random between 1 - 10 seconds from now
   end
@@ -83,7 +89,7 @@ class MainGameScene < Scene
   end
 
   def tick(args)
-    @sprites = [@paddles, @balls.values, @blocks.values]
+    @sprites = [@paddles, @balls.values, @blocks.values, @explosions.values]
     render
     calculations
     input_checking
@@ -110,6 +116,7 @@ class MainGameScene < Scene
     decide_to_make_next_block
 
     @sprites.each { |sprite_group| sprite_group.each { |sprite| sprite.calculate(@args) } }
+
   end
 
   def ball_collision_check_with_left_paddle

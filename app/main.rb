@@ -9,6 +9,7 @@ require '/app/main_menu/main_menu_scene.rb'
 
 # main game scene
 require '/app/main_game/main_game_scene.rb'
+
 require '/app/main_game/paddle.rb'
 
 require '/app/main_game/ball/ball.rb'
@@ -25,6 +26,8 @@ require '/app/main_game/block/extra_ball_block.rb'
 require '/app/main_game/block/remove_ball_block.rb'
 require '/app/main_game/block/drunk_ball_block.rb'
 require '/app/main_game/block/bomb_ball_block.rb'
+
+require '/app/main_game/explosion.rb'
 
 # game over scene
 require '/app/game_over/game_over_scene.rb'
