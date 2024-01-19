@@ -39,9 +39,6 @@ class MainGameScene < Scene
       create_random_block
     }
 
-    an_explosion = Explosion.new(@args, 300, 300, @explosions)
-    @explosions[an_explosion.object_id] = an_explosion
-
     @sprites = [@paddles, @balls.values, @blocks.values, @explosions.values]
 
     @next_block_creation_frame = (rand(10) + 1) * 60 + @args.state.tick_count  # random between 1 - 10 seconds from now
@@ -166,7 +163,15 @@ class MainGameScene < Scene
   end
 
   def ball_pass_right_paddle
-    @balls.delete_if { |ball_key, ball_value| ball_value.x > @args.grid.right }
+    @balls.delete_if do |ball_key, ball_value|
+      ball_passed = ball_value.x > @args.grid.right
+      if ball_passed && ball_value.is_a?(BombBall)
+        new_explosion = Explosion.new(@args, ball_value.x, ball_value.y, @explosions)
+        @explosions[new_explosion.object_id] = new_explosion
+      end
+
+      ball_passed
+    end
 
     if @balls.length == 0
       @left_score += 1
@@ -175,7 +180,15 @@ class MainGameScene < Scene
   end
 
   def ball_pass_left_paddle
-    @balls.delete_if { |ball_key, ball_value| ball_value.right_x < @args.grid.left }
+    @balls.delete_if do |ball_key, ball_value|
+      ball_passed = ball_value.right_x < @args.grid.left
+      if ball_passed && ball_value.is_a?(BombBall)
+        new_explosion = Explosion.new(@args, ball_value.x, ball_value.y, @explosions)
+        @explosions[new_explosion.object_id] = new_explosion
+      end
+
+      ball_passed
+    end
 
     if @balls.length == 0
       @right_score += 1
