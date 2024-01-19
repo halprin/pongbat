@@ -1,4 +1,5 @@
 class Explosion < Sprite
+  attr_accessor :radius
 
   @@expansion_velocity = 2
   @@collapse_velocity = 10

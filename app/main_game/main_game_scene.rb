@@ -169,7 +169,7 @@ class MainGameScene < Scene
         ball_value.ball_passes_paddle
       end
 
-      return ball_passed
+      ball_passed
     end
 
     if @balls.length == 0
@@ -185,7 +185,7 @@ class MainGameScene < Scene
         ball_value.ball_passes_paddle
       end
 
-      return ball_passed
+      ball_passed
     end
 
     if @balls.length == 0
