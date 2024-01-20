@@ -15,6 +15,14 @@ class Explosion < Sprite
     @explosions = explosions
   end
 
+  def center_x
+    return @x + @radius
+  end
+
+  def center_y
+    return @y + @radius
+  end
+
   def calculate(args)
     if !@expanding && @radius <= 0
       @explosions.delete(object_id)

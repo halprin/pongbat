@@ -65,7 +65,7 @@ class MainGameScene < Scene
     random_start_y = rand(fourth_of_height * 2) + fourth_of_height
 
     block_choice = rand(6)
-    # block_choice = 5
+    block_choice = 5
     case block_choice
     when 0
       new_block = SpeedUpBlock.new(@args, random_start_x, random_start_y, @blocks)
@@ -109,6 +109,8 @@ class MainGameScene < Scene
 
     paddles_collision_with_top
     paddles_collision_with_bottom
+
+    paddles_collision_with_explosions
 
     decide_to_make_next_block
 
@@ -243,6 +245,18 @@ class MainGameScene < Scene
       @right_paddle.prevent_down
     else
       @right_paddle.allow_down
+    end
+  end
+
+  def paddles_collision_with_explosions
+    @explosions.each_value do |explosion|
+      @paddles.each do |paddle|
+        for paddle_slice_y in paddle.y..(paddle.y + paddle.h)
+          paddle_line_affected_by_explosion = @args.geometry.circle_intersect_line?({x: explosion.center_x, y: explosion.center_y, radius: explosion.radius}, {x: paddle.x, y: paddle_slice_y, x2: paddle.x + paddle.w, y2: paddle_slice_y})
+          next unless paddle_line_affected_by_explosion
+          puts "line affected by explosion"
+        end
+      end
     end
   end
 
