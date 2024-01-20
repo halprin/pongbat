@@ -2,6 +2,7 @@
 
 require '/app/scene.rb'
 require '/app/sprite.rb'
+require '/app/solid.rb'
 require '/app/button.rb'
 
 # main menu scene
@@ -11,6 +12,7 @@ require '/app/main_menu/main_menu_scene.rb'
 require '/app/main_game/main_game_scene.rb'
 
 require '/app/main_game/paddle.rb'
+require '/app/main_game/paddle2.rb'
 
 require '/app/main_game/ball/ball.rb'
 require '/app/main_game/ball/red_ball.rb'

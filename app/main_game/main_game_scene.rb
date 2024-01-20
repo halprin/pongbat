@@ -5,8 +5,11 @@ class MainGameScene < Scene
     @left_score = 0
     @right_score = 0
 
-    @left_paddle = Paddle.new(args, 'blue.png', args.grid.left + 10, args.grid.top - Paddle.height - 200)
-    @right_paddle = Paddle.new(args, 'red.png', args.grid.right - Paddle.width - 10, args.grid.top - Paddle.height - 200)
+    # @left_paddle = Paddle.new(args, 'blue.png', args.grid.left + 10, args.grid.top - Paddle.height - 200)
+    # @right_paddle = Paddle.new(args, 'red.png', args.grid.right - Paddle.width - 10, args.grid.top - Paddle.height - 200)
+
+    @left_paddle = Paddle2.new(args, args.grid.left + 10, args.grid.top - Paddle.height - 200, :blue)
+    @right_paddle = Paddle2.new(args, args.grid.right - Paddle.width - 10, args.grid.top - Paddle.height - 200, :red)
 
     @ui_bottom = args.grid.top - 80
 
@@ -86,7 +89,7 @@ class MainGameScene < Scene
   end
 
   def tick(args)
-    @sprites = [@paddles, @balls.values, @blocks.values, @explosions.values]
+    @sprites = [@balls.values, @blocks.values, @explosions.values]
     render
     calculations
     input_checking
@@ -94,6 +97,7 @@ class MainGameScene < Scene
 
   def render
     @args.outputs.background_color = [255, 255, 255]
+    @args.outputs.solids << @paddles
     @args.outputs.sprites << @sprites
     display_ui(@args)
   end
@@ -114,6 +118,7 @@ class MainGameScene < Scene
 
     decide_to_make_next_block
 
+    @paddles.each { |solid| solid.calculate(@args) }
     @sprites.each { |sprite_group| sprite_group.each { |sprite| sprite.calculate(@args) } }
 
   end
