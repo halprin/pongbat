@@ -42,7 +42,7 @@ class MainGameScene < Scene
       create_random_block
     }
 
-    @sprites = [@paddles, @balls.values, @blocks.values, @explosions.values]
+    @sprites = [@balls.values, @blocks.values, @explosions.values]
 
     @next_block_creation_frame = (rand(10) + 1) * 60 + @args.state.tick_count  # random between 1 - 10 seconds from now
   end
@@ -97,7 +97,7 @@ class MainGameScene < Scene
 
   def render
     @args.outputs.background_color = [255, 255, 255]
-    @args.outputs.solids << @paddles
+    @paddles.each { |paddle| @args.outputs.solids << paddle.solids }
     @args.outputs.sprites << @sprites
     display_ui(@args)
   end
@@ -256,11 +256,7 @@ class MainGameScene < Scene
   def paddles_collision_with_explosions
     @explosions.each_value do |explosion|
       @paddles.each do |paddle|
-        for paddle_slice_y in paddle.y..(paddle.y + paddle.h)
-          paddle_line_affected_by_explosion = @args.geometry.circle_intersect_line?({x: explosion.center_x, y: explosion.center_y, radius: explosion.radius}, {x: paddle.x, y: paddle_slice_y, x2: paddle.x + paddle.w, y2: paddle_slice_y})
-          next unless paddle_line_affected_by_explosion
-          puts "line affected by explosion"
-        end
+        paddle.break_with_explosion(explosion)
       end
     end
   end
